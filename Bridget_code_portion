@@ -1,0 +1,59 @@
+#Dr. Zhivago Case##
+setwd("~/Documents/R")
+#Loading packages##
+library("chron")
+library("pacman")
+
+#Attaching two data files##
+TableCeline <- read.csv("~/Documents/R/Case1Table1Celine.csv")
+TableTao <- read.csv("~/Documents/R/Case1Table2Tao.csv")
+
+#Converting time of columns using chron for Table Celine##
+TableCeline$Arrival <- chron(times. = TableCeline$Arrival)
+TableCeline$Check.in.Start <- chron(times. = TableCeline$Check.in.Start)
+TableCeline$Check.in.Ends <- chron(times. = TableCeline$Check.in.Ends)
+TableCeline$See.Doctor <- chron(times. = TableCeline$See.Doctor)
+TableCeline$Departure.Time <- chron(times. = TableCeline$Departure.Time)
+
+#Converting to time using chron for Table Tao##
+TableTao$Arrival <- chron(times. = TableTao$Arrival)
+TableTao$Check.in.Start <- chron(times. = TableTao$Check.in.Start)
+TableTao$Check.in.Ends <- chron(times. = TableTao$Check.in.Ends)
+TableTao$See.Doctor <- chron(times. = TableTao$See.Doctor)
+TableTao$Departure.Time <- chron(times. = TableTao$Departure.Time)
+
+#Adding columns in TableCeline for wait time and time with nurse Celine##
+TableCeline$Nurse.Wait.Time <- c(TableCeline$Check.in.Start-TableCeline$Arrival)
+TableCeline$Time.Spent.Nurse <- c(TableCeline$Check.in.Ends-TableCeline$Check.in.Start)
+
+#Adding columns in TableCeline for wait time and time with Doctor Zhivago##
+TableCeline$Doctor.Wait.Time <- c(TableCeline$See.Doctor-TableCeline$Check.in.Ends)
+TableCeline$Time.Spent.Doctor <- c(TableCeline$Departure.Time-TableCeline$See.Doctor)
+
+#Add column for total time in TableCeline##
+TableCeline$Total.Time <- c(TableCeline$Departure.Time-TableCeline$Arrival)
+
+#Get averages of newly created columns for TableCeline##
+AveragesTableCeline <- chron(times. = colMeans(TableCeline[7:11]))
+
+#Adding columns in TableTao for wait time and time with nurse Tao##
+TableTao$Nurse.Wait.Time <- c(TableTao$Check.in.Start-TableTao$Arrival)
+TableTao$Time.Spent.Nurse <- c(TableTao$Check.in.Ends-TableTao$Check.in.Start)
+
+#Adding columns in TableTao for wait time and time with Doctor Zhivago##
+TableTao$Doctor.Wait.Time <- c(TableTao$See.Doctor-TableTao$Check.in.Ends)
+TableTao$Time.Spent.Doctor <- c(TableTao$Departure.Time-TableTao$See.Doctor)
+
+#Add column for total time in TableTao##
+TableTao$Total.Time <- c(TableTao$Departure.Time-TableTao$Arrival)
+
+#Get averages of newly created columns for TableTao##
+AveragesTableTao <- chron(times. = colMeans(TableTao[7:11]))
+
+#Calculate averages##
+AveragesTableCeline
+AveragesTableTao
+
+#Calculate difference between Nurse Celine and Nurse Tao average waiting time##
+mean(TableCeline$Doctor.Wait.Time) - mean(TableTao$Doctor.Wait.Time)
+mean(TableTao$Nurse.Wait.Time) - mean(TableCeline$Nurse.Wait.Time)
